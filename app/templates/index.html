@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FIRE Calculator</title>
+</head>
+<body>
+    <h1>FIRE Calculator</h1>
+    <form action="/calculate" method="POST">
+        <label>Current Portfolio:</label>
+        <input type="number" name="current_portfolio" required><br>
+        <label>Monthly Savings:</label>
+        <input type="number" name="monthly_savings" required><br>
+        <label>FIRE Goal:</label>
+        <input type="number" name="fire_goal" required><br>
+        <label>Years (optional):</label>
+        <input type="number" name="years"><br>
+        <button type="submit">Calculate</button>
+    </form>
+</body>
+</html>
