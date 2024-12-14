@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, render_template
-from calculations import calculate_fire, savings_needed
+from app.calculations import calculate_fire, savings_needed
 
 routes = Blueprint('routes', __name__)
 

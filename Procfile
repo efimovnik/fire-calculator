@@ -1,1 +1,1 @@
-web: gunicorn app.main:app
+web: PYTHONPATH=$PYTHONPATH:/opt/render/project/src gunicorn app.main:app
