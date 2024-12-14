@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FIRE Results</title>
+</head>
+<body>
+    <h1>FIRE Results</h1>
+    <p>Time to FIRE: {{ results['time_to_fire'] }} years</p>
+    <p>
+        Monthly Savings Needed to Retire in {{ request.form.get('years') or 'a specified time' }} years: 
+        {{ results['savings_needed'] or 'N/A' }}
+    </p>
+    <a href="/">Go Back</a>
+</body>
+</html>
