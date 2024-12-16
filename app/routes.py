@@ -3,6 +3,17 @@ from app.calculations import calculate_fire, savings_needed
 
 routes = Blueprint('routes', __name__)
 
+def parse_number(value):
+    """
+    Parses a user input string into a float.
+    Handles commas, shorthand (e.g., 1M -> 1000000), and standard numeric strings.
+    """
+    if not value:
+        return 0
+    # Remove commas and convert shorthand notation (e.g., 1M -> 1000000)
+    value = value.upper().replace(',', '').replace('M', '000000').replace('K','000').replace('k','000')
+    return float(value)
+
 @routes.route('/')
 def index():
     return render_template('index.html')
@@ -12,9 +23,9 @@ def calculate():
     # Fetch and process input
     data = request.form
     current_age = int(data['current_age'])
-    current_portfolio = float(data['current_portfolio'])
-    monthly_savings = float(data['monthly_savings'])
-    fire_goal = float(data['fire_goal'])
+    current_portfolio = parse_number(data['current_portfolio'])
+    monthly_savings = parse_number(data['monthly_savings'])
+    fire_goal = parse_number(data['fire_goal'])
     stocks_allocation = float(data['stocks_allocation'])
     years = data.get('years', None)
     years = int(years) if years else None  # Convert to int if provided, else keep as None

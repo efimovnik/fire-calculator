@@ -2,23 +2,139 @@
 <html>
 <head>
     <title>FIRE Calculator</title>
+    <style>
+        /* Styling as before */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #343a40;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            color: #495057;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #80bdff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>FIRE Calculator</h1>
-    <form action="/calculate" method="POST">
+    <form action="/calculate" method="POST" id="fireForm">
         <label>Current Age:</label>
-        <input type="number" name="current_age" required><br>
+        <input type="number" name="current_age" required placeholder="Enter your current age">
+
         <label>Current Portfolio:</label>
-        <input type="number" name="current_portfolio" required><br>
+        <input type="text" name="current_portfolio" id="currentPortfolio" required placeholder="e.g., 1M or 10,000">
+
         <label>Monthly Savings:</label>
-        <input type="number" name="monthly_savings" required><br>
+        <input type="text" name="monthly_savings" id="monthlySavings" required placeholder="e.g., 5K or 10,000">
+
         <label>FIRE Goal:</label>
-        <input type="number" name="fire_goal" required><br>
+        <input type="text" name="fire_goal" id="fireGoal" required placeholder="e.g., 1.5M or 1,500,000">
+
         <label>Asset Allocation (% Stocks):</label>
-        <input type="number" name="stocks_allocation" required><br>
+        <input type="number" name="stocks_allocation" required placeholder="Enter % of stocks (e.g., 70)">
+
         <label>Years (optional):</label>
-        <input type="number" name="years"><br>
+        <input type="number" name="years" placeholder="Enter target years (optional)">
+
         <button type="submit">Calculate</button>
     </form>
+
+    <script>
+        // Function to format numbers with commas dynamically
+        function formatNumberWithCommas(value) {
+            // Remove all commas and non-digit characters except '.'
+            value = value.replace(/[^0-9.]/g, '');
+            if (!value) return ''; // Return empty string if nothing remains
+            const [integer, decimal] = value.split('.'); // Separate integer and decimal parts
+            const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas
+            return decimal ? `${formattedInteger}.${decimal}` : formattedInteger; // Rejoin decimal if exists
+        }
+
+        // Function to interpret shorthand (e.g., 'M' or 'K') and replace them dynamically
+        function interpretShorthand(value) {
+            // Handle 'M' or 'm' -> millions
+            value = value.replace(/([0-9.]+)[Mm]/g, (match, num) => `${parseFloat(num) * 1000000}`);
+            // Handle 'K' or 'k' -> thousands
+            value = value.replace(/([0-9.]+)[Kk]/g, (match, num) => `${parseFloat(num) * 1000}`);
+            return value;
+        }
+
+        // Event listener for formatting and interpreting inputs dynamically
+        document.querySelectorAll('input[type="text"]').forEach((input) => {
+            input.addEventListener('input', (e) => {
+                const cursorPosition = e.target.selectionStart; // Save cursor position
+                const originalLength = e.target.value.length; // Original value length
+                let value = e.target.value; // Get current value
+                value = interpretShorthand(value); // Replace shorthand (e.g., M or K)
+                value = formatNumberWithCommas(value); // Format with commas
+                e.target.value = value; // Update input value
+                const newLength = e.target.value.length; // New value length after formatting
+                // Adjust cursor position for added commas or replacements
+                e.target.setSelectionRange(
+                    cursorPosition + (newLength - originalLength),
+                    cursorPosition + (newLength - originalLength)
+                );
+            });
+        });
+
+        // Handle form submission to clean inputs before sending to backend
+        const fireForm = document.getElementById('fireForm');
+        fireForm.addEventListener('submit', (e) => {
+            ['current_portfolio', 'monthly_savings', 'fire_goal'].forEach((field) => {
+                const input = document.getElementById(field);
+                input.value = input.value.replace(/[^0-9.]/g, ''); // Remove commas and shorthand for backend
+            });
+        });
+    </script>
 </body>
 </html>
