@@ -2,14 +2,44 @@
 <html>
 <head>
     <title>FIRE Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        p {
+            margin: 10px 0;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>FIRE Results</h1>
-    <p>Time to FIRE: {{ results['time_to_fire'] }} years</p>
-    <p>
-        Monthly Savings Needed to Retire in {{ request.form.get('years') or 'a specified time' }} years: 
-        {{ results['savings_needed'] or 'N/A' }}
-    </p>
+    {% if results.get('required_monthly_savings') %}
+        <p>To achieve your FIRE goal in <strong>{{ results['years_provided'] }} years</strong>, 
+        you need to save <strong>${{ results['required_monthly_savings'] }}</strong> monthly.</p>
+    {% else %}
+        <p>You will reach your FIRE goal in <strong>{{ results['years_needed'] }} years</strong>.</p>
+        <p>Your projected retirement age is <strong>{{ results['retirement_age'] }}</strong>.</p>
+    {% endif %}
     <a href="/">Go Back</a>
 </body>
 </html>
